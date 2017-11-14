@@ -72,6 +72,8 @@ function install_nodejs() {
     apt install -y nodejs
     npm i -g n
     n stable
+    echo -e "$title installing > ffmpeg"
+    apt install -y ffmpeg
   fi
 }
 
