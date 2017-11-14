@@ -82,7 +82,9 @@ function helper() {
   cp $PWD/cli/elixir.js /$PWD/cli/elixir-cli
 
   if [ -z "$(ls -A /usr/local/bin/elixir-cli)" ]; then
-    exit 0
+    rm -rf /usr/local/bin/elixir-cli
+    echo -e "$title symlink > /usr/local/bin"
+    ln -s $PWD/cli/elixir-cli /usr/local/bin/
   else
     rm -rf /usr/local/bin/elixir-cli
     echo -e "$title symlink > /usr/local/bin"
