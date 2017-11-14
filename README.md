@@ -12,7 +12,7 @@ $ cd elixir-cli
 $ ./setup.sh --install
 ```
 
-## Usage
+## Test
 
 Option `-l` is to fetch only low-Q video, without the `-l` is high-Q video. Option `-b` is set bitrate (max. 320 kbps) in MP3 format.
 
