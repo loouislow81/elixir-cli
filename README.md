@@ -4,6 +4,8 @@
 
 ## Installation
 
+> Prerequisites: nodejs, ffmpeg
+
 Use `setup.sh` to install the CLI with ease. You also can add `--help` option. After that, you can use it anywhere in the Terminal.
 
 ```bash
