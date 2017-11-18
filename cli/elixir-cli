@@ -40,7 +40,7 @@ const META_PROGRESS_BAR_FORMAT = colors.cyan('Fetching > Metadata:\t') + '[:bar]
 const DL_PROGRESS_BAR_FORMAT = colors.cyan('Downloading > Video\t') + '[:bar] :percent @ :rate (:amount)';
 const CONVERT_PROGRESS_BAR_FORMAT = colors.cyan('Transcoding > MP3\t') + '[:bar] :percent @ :rate in :elapseds';
 const PROGRESS_BAR_OPTIONS = {
-  width: 20,
+  width: 15,
   complete: '/',
   incomplete: ' ',
   renderThrottle: 200
