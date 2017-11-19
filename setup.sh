@@ -13,7 +13,7 @@
 
 binary=$(basename $0)
 
-# typos
+# ansi
 blue='\e[94m'
 green='\e[92m'
 red='\e[91m'

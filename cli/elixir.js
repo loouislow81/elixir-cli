@@ -1,4 +1,5 @@
 #!/usr/local/bin/node
+
 /*
   @@script: elixir-cli.js
   @@description: Cli for Elixir
@@ -9,54 +10,54 @@
 
 global.__core = __dirname + '/';
 
-const fluent_ffmpeg = (__core + '../node_modules/fluent-ffmpeg');
+const fluent_ffmpeg = (__core + '../node_modules/fluent-ffmpeg')
 
-const ytdl = require('ytdl-core');
-const fs = require('fs');
-const program = require('commander');
-const q = require('q');
-const ProgressBar = require('progress');
-const ffmpeg = require(fluent_ffmpeg);
-const ffMetadata = require('ffmetadata');
-const ffProbe = require('node-ffprobe');
-const path = require('path');
-const fsExtra = require('fs-extra');
-const request = require('sync-request');
+const ytdl = require('ytdl-core')
+const fs = require('fs')
+const program = require('commander')
+const q = require('q')
+const ProgressBar = require('progress')
+const ffmpeg = require(fluent_ffmpeg)
+const ffMetadata = require('ffmetadata')
+const ffProbe = require('node-ffprobe')
+const path = require('path')
+const fsExtra = require('fs-extra')
+const request = require('sync-request')
 
-const prettyBytes = require('pretty-bytes');
-const colors = require('colors/safe');
-const sanitize = require('sanitize-filename');
-const escapeStringRegexp = require('escape-string-regexp');
+const prettyBytes = require('pretty-bytes')
+const colors = require('colors/safe')
+const sanitize = require('sanitize-filename')
+const escapeStringRegexp = require('escape-string-regexp')
 
-const prompt = require(__core + '../lib/input.js');
-const util = require(__core + '../lib/helper.js');
-const packageJson = require(__core + '../package.json');
+const prompt = require(__core + '../lib/input.js')
+const util = require(__core + '../lib/helper.js')
+const packageJson = require(__core + '../package.json')
 
 const DEFAULT_SEPARATORS = ['-', 'â€”']
 const ITUNES_API_BASE = 'https://itunes.apple.com/search?term=';
-const METADATA_FIELDS = ['title', 'artist', 'album', 'genre', 'date'];
+const METADATA_FIELDS = ['title', 'artist', 'album', 'genre', 'date']
 
-const META_PROGRESS_BAR_FORMAT = colors.cyan('Fetching > Metadata:\t') + '[:bar] :percent in :elapseds :msg';
-const DL_PROGRESS_BAR_FORMAT = colors.cyan('Downloading > Video\t') + '[:bar] :percent @ :rate (:amount)';
-const CONVERT_PROGRESS_BAR_FORMAT = colors.cyan('Transcoding > MP3\t') + '[:bar] :percent @ :rate in :elapseds';
+const META_PROGRESS_BAR_FORMAT = colors.cyan('Fetching > Metadata:\t') + '[:bar] :percent in :elapseds :msg'
+const DL_PROGRESS_BAR_FORMAT = colors.cyan('Downloading > Video\t') + '[:bar] :percent @ :rate (:amount)'
+const CONVERT_PROGRESS_BAR_FORMAT = colors.cyan('Transcoding > MP3\t') + '[:bar] :percent @ :rate in :elapseds'
 const PROGRESS_BAR_OPTIONS = {
   width: 15,
   complete: '/',
   incomplete: ' ',
   renderThrottle: 200
-};
+}
 
 program
-.version(packageJson.version)
-.usage('[options] <youtube_url>')
-.description('Elixir Cli (v' + packageJson.version +')')
-.option('-o, --output <output_file>', 'output the final mp3 to this file name')
-.option('-i, --intermediate', 'output intermediate downloaded video file')
-.option('-l, --low-quality', 'download the video at low quality settings')
-.option('-v, --verbose', 'print additional information during run, useful for debugging')
-.option('-s, --separator <separator>', 'set the seperator for artist/song in video title')
-.option('-b, --bitrate <rate>', 'set the output mp3 bitrate in kbps')
-.parse(process.argv)
+  .version(packageJson.version)
+  .usage('[options] <youtube_url>')
+  .description('Elixir Cli (v' + packageJson.version + ')')
+  .option('-o, --output <output_file>', 'output the final mp3 to this file name')
+  .option('-i, --intermediate', 'output intermediate downloaded video file')
+  .option('-l, --low-quality', 'download the video at low quality settings')
+  .option('-v, --verbose', 'print additional information during run, useful for debugging')
+  .option('-s, --separator <separator>', 'set the seperator for artist/song in video title')
+  .option('-b, --bitrate <rate>', 'set the output mp3 bitrate in kbps')
+  .parse(process.argv)
 
 /* Default argument values */
 program.lowQuality = !program.lowQuality ? false : true;
@@ -75,7 +76,9 @@ if (program.bitrate && (program.bitrate < 32 || program.bitrate > 320)) error('B
 
 printHeader();
 debug(colors.cyan('Verbose mode enabled'));
-debug('Using ' + program.separator.map(function (e) { return '\'' + e + '\''; }).join(', ') + ' as video title separator(s).');
+debug('Using ' + program.separator.map(function(e) {
+  return '\'' + e + '\'';
+}).join(', ') + ' as video title separator(s).');
 if (program.bitrate) debug('Set output mp3 bitrate to ' + program.bitrate + 'kbps.');
 debug('');
 
@@ -95,20 +98,26 @@ var endTime = util.nowSeconds();
 
 var downloadProgress = new ProgressBar(
   META_PROGRESS_BAR_FORMAT,
-  Object.assign({total: 2}, PROGRESS_BAR_OPTIONS)
+  Object.assign({
+    total: 2
+  }, PROGRESS_BAR_OPTIONS)
 );
 
 debug('[elixir-cli] connecting to YouTube...');
 
 ytdl.getInfo(url, function(err, info) {
   if (err) error(err, '[elixir-cli] [err] unable to fetch video metadata from youtube.');
-  downloadProgress.tick({'msg': ''});
+  downloadProgress.tick({
+    'msg': ''
+  });
   var targetFormat = program.lowQuality ?
-  util.smallestSizeFormat(info) :
-  util.highestBitrateFormat(info);
+    util.smallestSizeFormat(info) :
+    util.highestBitrateFormat(info);
 
   if (!targetFormat) error('[elixir-cli] [err] no formats of this video contain audio.');
-  downloadProgress.tick(1, {'msg': colors.cyan('bitrate: ' + targetFormat.audioBitrate + 'kbps')});
+  downloadProgress.tick(1, {
+    'msg': colors.cyan('bitrate: ' + targetFormat.audioBitrate + 'kbps')
+  });
   debug('[elixir-cli] best match: itune-tag: ' + targetFormat.itag + '.');
 
   videoMetadata = {
@@ -122,8 +131,11 @@ infoCompleted.promise.then(function(metadata) {
   /* Start downloading the video */
   var youtube_stream = null;
   try {
-    youtube_stream = ytdl(url, {quality: metadata.format.itag});
-  } catch (err) {
+    youtube_stream = ytdl(url, {
+      quality: metadata.format.itag
+    });
+  }
+  catch (err) {
     error(err, '[elixir-cli] unable to download video from youtube.');
   }
 
@@ -133,7 +145,9 @@ infoCompleted.promise.then(function(metadata) {
     debug('Video file size: ' + prettyBytes(totalSize) + '\n');
     downloadProgress = new ProgressBar(
       DL_PROGRESS_BAR_FORMAT,
-      Object.assign({total: totalSize}, PROGRESS_BAR_OPTIONS)
+      Object.assign({
+        total: totalSize
+      }, PROGRESS_BAR_OPTIONS)
     );
   });
   youtube_stream.on('data', function(chunk) {
@@ -145,8 +159,12 @@ infoCompleted.promise.then(function(metadata) {
       'rate': prettyBytes(dlRate) + '/s'
     });
   });
-  youtube_stream.on('end', function() { downloadCompleted.resolve(); })
-  youtube_stream.on('error', function(err) { error(err, '[elixir-cli] [err] unexpected problem while downloading video.'); });
+  youtube_stream.on('end', function() {
+    downloadCompleted.resolve();
+  })
+  youtube_stream.on('error', function(err) {
+    error(err, '[elixir-cli] [err] unexpected problem while downloading video.');
+  });
 });
 
 /* Process the video once download is compeleted */
@@ -165,28 +183,35 @@ downloadCompleted.promise.then(function() {
   /* Convert to an mp3 */
   var convertProgress = new ProgressBar(
     CONVERT_PROGRESS_BAR_FORMAT,
-    Object.assign({total: 100}, PROGRESS_BAR_OPTIONS)
+    Object.assign({
+      total: 100
+    }, PROGRESS_BAR_OPTIONS)
   );
   var last = 0;
 
   let outputBitrate = program.bitrate || videoMetadata.format.audioBitrate;
 
   ffmpeg(videoFileName)
-  .format('mp3')
-  .audioBitrate(outputBitrate)
-  .on('error', function(err, stdout, stderr) {
-    error(err, '[elixir-cli] [err] ffmpeg encountered an error converting video to mp3.');
-  })
-  .on('progress', function(progress) {
-    var diff = Math.ceil(progress.percent) - last;
-    last = Math.ceil(progress.percent);
-    convertProgress.tick(diff, { rate: progress.currentKbps + 'kbps' });
-  })
-  .on('end', function() {
-    if (!program.intermediate) { debug('[elixir-cli] deleting temporary file ' + videoFileName); fs.unlinkSync(videoFileName); }
-    convertCompleted.resolve();
-  })
-  .save(musicFileName);
+    .format('mp3')
+    .audioBitrate(outputBitrate)
+    .on('error', function(err, stdout, stderr) {
+      error(err, '[elixir-cli] [err] ffmpeg encountered an error converting video to mp3.');
+    })
+    .on('progress', function(progress) {
+      var diff = Math.ceil(progress.percent) - last;
+      last = Math.ceil(progress.percent);
+      convertProgress.tick(diff, {
+        rate: progress.currentKbps + 'kbps'
+      });
+    })
+    .on('end', function() {
+      if (!program.intermediate) {
+        debug('[elixir-cli] deleting temporary file ' + videoFileName);
+        fs.unlinkSync(videoFileName);
+      }
+      convertCompleted.resolve();
+    })
+    .save(musicFileName);
 });
 
 /* Write ID3 tags */
@@ -222,7 +247,8 @@ metadataCompleted.promise.then(function(metadata) {
   try {
     fsExtra.copySync(musicFileName, outputFileName);
     fs.unlink(musicFileName);
-  } catch (err) {
+  }
+  catch (err) {
     error(err, '[elixir-cli] [err] unable to write ' + outputFileName + '.');
   }
 
@@ -254,7 +280,8 @@ function gatherMetadata(metadata) {
   var result = loadItunesMeta(metadata.title);
   if (result.success) {
     Object.assign(meta, result);
-  } else {
+  }
+  else {
     /* Fallback to parsing video title if no results from itunes */
     debug('Falling back to parsing video title...');
     result = parseVideoTitle(metadata.title);
@@ -271,11 +298,24 @@ function gatherMetadata(metadata) {
 
   /* Use discovered values as defaults for user to confirm */
   console.log(colors.bold('\nEnter song metadata:\n'));
-  meta.title = prompt(colors.cyan('Title: '), {required: true, default: meta.title});
-  meta.artist = prompt(colors.cyan('Artist: '), {required: true, default: meta.artist});
-  meta.album = prompt(colors.cyan('Album: '), {required: true, default: meta.album || 'Single'});
-  meta.genre = prompt(colors.cyan('Genre: '), {default: meta.genre});
-  meta.date = prompt(colors.cyan('Year: '), {default: meta.date});
+  meta.title = prompt(colors.cyan('Title: '), {
+    required: true,
+    default: meta.title
+  });
+  meta.artist = prompt(colors.cyan('Artist: '), {
+    required: true,
+    default: meta.artist
+  });
+  meta.album = prompt(colors.cyan('Album: '), {
+    required: true,
+    default: meta.album || 'Single'
+  });
+  meta.genre = prompt(colors.cyan('Genre: '), {
+    default: meta.genre
+  });
+  meta.date = prompt(colors.cyan('Year: '), {
+    default: meta.date
+  });
 
   return meta;
 }
@@ -288,7 +328,9 @@ function loadItunesMeta(searchTerm) {
 
   if (response.statusCode !== 200) {
     debug('Itunes API returned ' + response.statusCode + ' status code.');
-    return { success: false };
+    return {
+      success: false
+    };
   }
 
   let results = JSON.parse(response.getBody('utf8')).results || [];
@@ -303,7 +345,9 @@ function loadItunesMeta(searchTerm) {
   let match = results.shift();
   if (!match) {
     debug('No matches found on Itunes.');
-    return { success: false };
+    return {
+      success: false
+    };
   }
 
   debug('Found a match on Itunes.');
@@ -316,15 +360,19 @@ function loadItunesMeta(searchTerm) {
     trackNum: match.trackNumber,
     trackCount: match.trackCount,
     genre: match.primaryGenreName,
-    date: match.releaseDate.slice(0,4)
+    date: match.releaseDate.slice(0, 4)
   };
 }
 
 /* Parses the video title to extract song title and artist, trim unnecessary info */
 function parseVideoTitle(videoTitle) {
-  let meta = {success: false};
+  let meta = {
+    success: false
+  };
 
-  var separators = program.separator.map(function(e) { return escapeStringRegexp(e); });
+  var separators = program.separator.map(function(e) {
+    return escapeStringRegexp(e);
+  });
   separators = separators.join('|');
   var titleRegex = new RegExp('([\\S ]+) (' + separators + ') ([\\S ]+)');
 
@@ -343,7 +391,10 @@ function parseVideoTitle(videoTitle) {
     meta.title = util.removeTrailing(meta.title, 'lyrics');
 
     meta.success = true;
-  } else { debug('[elixir-cli] [err] unable to auto-detect song title and artist from video title.'); }
+  }
+  else {
+    debug('[elixir-cli] [err] unable to auto-detect song title and artist from video title.');
+  }
   return meta;
 }
 
