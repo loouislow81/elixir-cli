@@ -5,10 +5,6 @@
   "author": "Loouis Low",
   "license": "ISC",
   "main": "/cli/elixir.js",
-    "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -f *.mp3 && rm -f *.mp4 && rm -f *.webm"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -f *.mp3 && rm -f *.mp4 && rm -f *.webm"
@@ -18,21 +14,21 @@
   },
   "dependencies": {
     "colors": "^1.1.2",
-    "commander": "^2.9.0",
-    "deasync": "^0.1.9",
+    "commander": "^2.12.1",
+    "deasync": "^0.1.11",
     "escape-string-regexp": "^1.0.5",
     "ffmetadata": "^1.4.0",
-    "fluent-ffmpeg": "^2.1.0",
-    "fs-extra": "^2.0.0",
-    "nexe": "^1.1.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^4.0.2",
+    "nexe": "^2.0.0-rc.20",
     "node-ffprobe": "^1.2.2",
     "pretty-bytes": "^4.0.2",
-    "progress": "^1.1.8",
-    "q": "^1.4.1",
+    "progress": "^2.0.0",
+    "q": "^1.5.1",
     "sanitize-filename": "^1.6.1",
     "streamifier": "^0.1.1",
-    "sync-request": "^4.0.1",
-    "ytdl-core": "^0.7.24"
+    "sync-request": "^4.1.0",
+    "ytdl-core": "^0.18.2"
   },
   "devDependencies": {
     "nexe": "^1.1.2"
